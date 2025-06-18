@@ -1,14 +1,11 @@
 // src/App.jsx
 import React, { useState } from 'react';
-
-// 导入页面组件
 import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import LoginPage from './pages/LoginPage';
 import PostPage from './pages/PostPage';
 import ProfilePage from './pages/ProfilePage';
 
-// 导入布局组件
 import BottomNav from './components/layout/BottomNav';
 
 export default function App() {
@@ -20,6 +17,7 @@ export default function App() {
   const handleGuest = () => { setUser({ name: '游客', avatar: 'https://i.pravatar.cc/150?u=guest' }); setCurrentPage('home'); };
   const handleSelectPost = (post) => { setSelectedPost(post); setCurrentPage('detail'); };
   const handleBack = () => { setSelectedPost(null); setCurrentPage('home'); };
+
   const navigate = (page) => {
       if ((page === 'post' || page === 'profile') && user?.name === '游客') {
           alert('游客无法访问此页面，请先登录！');
@@ -39,10 +37,6 @@ export default function App() {
       default: return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
     }
   };
-
-  if (!user) {
-    return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
-  }
 
   return (
     <div className="w-full max-w-sm mx-auto bg-gray-100 font-sans shadow-2xl rounded-lg overflow-hidden relative min-h-screen">
