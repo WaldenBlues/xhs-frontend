@@ -1,27 +1,30 @@
-// src/components/layout/BottomNav.jsx
 import React from 'react';
-import { PlusSquare, User, Home } from 'lucide-react'; // 只导入需要的图标
+import { NavLink } from 'react-router-dom';
+import { Home, Search, PlusCircle, MessageSquare, User } from 'lucide-react';
 
-const BottomNav = ({ activePage, setActivePage }) => {
-  const navItems = [
-    { id: 'home', icon: Home, label: '首页' },
-    { id: 'post', icon: PlusSquare, label: '发布' },
-    { id: 'profile', icon: User, label: '我' },
-  ];
+const navItems = [
+  { to: '/', icon: Home, label: '首页' },
+  { to: '/search', icon: Search, label: '搜索' },
+  { to: '/create', icon: PlusCircle, label: '发布' },
+  { to: '/messages', icon: MessageSquare, label: '消息' },
+  { to: '/profile', icon: User, label: '我的' },
+];
 
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex justify-around items-center z-20 w-full max-w-sm mx-auto">
-      {navItems.map(item => (
-        <button
-          key={item.id}
-          onClick={() => setActivePage(item.id)}
-          className={`flex flex-col items-center justify-center w-full transition-colors duration-200 ${activePage === item.id ? 'text-red-500' : 'text-gray-600'}`}
-        >
-          <item.icon className={`w-6 h-6 mb-1 ${item.id === 'post' ? 'w-8 h-8' : ''}`} />
-          <span className={`text-xs ${item.id === 'post' ? 'hidden' : ''}`}>{item.label}</span>
-        </button>
-      ))}
-    </nav>
-  );
-};
+const BottomNav = () => (
+  <nav className="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around h-12">
+    {navItems.map(item => (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        className={({ isActive }) =>
+          `flex flex-col items-center justify-center text-xs ${isActive ? 'text-primary' : 'text-gray-500'}`
+        }
+      >
+        <item.icon className="w-6 h-6" />
+        <span>{item.label}</span>
+      </NavLink>
+    ))}
+  </nav>
+);
+
 export default BottomNav;
