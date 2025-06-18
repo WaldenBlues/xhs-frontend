@@ -11,3 +11,4 @@ const MasonryLayout = ({ posts, onSelectPost }) => (
     ))}
   </div>
 );
+export default MasonryLayout;

@@ -24,3 +24,4 @@ const BottomNav = ({ activePage, setActivePage }) => {
     </nav>
   );
 };
+export default BottomNav;

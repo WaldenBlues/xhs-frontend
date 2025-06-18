@@ -34,3 +34,4 @@ const ProfilePage = ({ user, onSelectPost }) => {
         </div>
     );
 };
+export default ProfilePage;

@@ -58,3 +58,4 @@ const DetailPage = ({ post, onBack }) => {
         </div>
     );
 };
+export default DetailPage;

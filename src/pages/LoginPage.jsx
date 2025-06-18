@@ -12,3 +12,4 @@ const LoginPage = ({ onLogin, onGuest }) => (
     </div>
   </div>
 );
+export default LoginPage;

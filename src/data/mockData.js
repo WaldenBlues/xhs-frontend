@@ -1,7 +1,7 @@
 // src/data/mockData.js
 
 // 模拟的帖子数据
-const getInitialPosts = () => [
+export const getInitialPosts = () => [
   {
     id: 1,
     imageUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1915&auto=format&fit=crop',
@@ -46,7 +46,17 @@ const getInitialPosts = () => [
   },
 ];
 
-const getCommentsForPost = () => [
-    { id: 1, user: { name: '摄影爱好者', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702e' }, text: '这张照片太美了，光线捕捉得刚刚好！', likes: 15 },
-    { id: 2, user: { name: '路人甲', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703e' }, text: '哇，这个地方在哪里呀？好想去！', likes: 8 },
+export const getCommentsForPost = () => [
+  {
+    id: 1,
+    user: { name: '摄影爱好者', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702e' },
+    text: '这张照片太美了，光线捕捉得刚刚好！',
+    likes: 15,
+  },
+  {
+    id: 2,
+    user: { name: '路人甲', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703e' },
+    text: '哇，这个地方在哪里呀？好想去！',
+    likes: 8,
+  },
 ];
