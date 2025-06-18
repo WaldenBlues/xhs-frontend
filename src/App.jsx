@@ -12,7 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import BottomNav from './components/layout/BottomNav';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home'); 
+  const [currentPage, setCurrentPage] = useState('login'); // [修复] 初始页面应为 'login'
   const [user, setUser] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -34,56 +34,59 @@ export default function App() {
 
   const handleBack = () => {
       setSelectedPost(null);
-      // 从详情页总是返回到首页
       setCurrentPage('home');
   }
 
+  // [修复] 简化导航逻辑
   const navigate = (page) => {
+      // 访问 'post' 或 'profile' 页面需要正式用户
+      if ((page === 'post' || page === 'profile') && user?.name === '游客') {
+          alert('游客无法访问此页面，请先登录！'); // 在实际应用中，这里应该是一个更友好的提示框
+          setCurrentPage('login');
+          setUser(null);
+          return;
+      }
       setCurrentPage(page);
   }
 
   // --- 渲染逻辑 ---
   const renderPage = () => {
-    const protectedPages = ['post', 'profile'];
-
-    // 如果未登录用户尝试访问受保护页面，则渲染登录页
-    if (!user && protectedPages.includes(currentPage)) {
-      return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
-    }
-  
     switch (currentPage) {
       case 'home':
         return <HomePage onSelectPost={handleSelectPost} />;
       case 'detail':
-        return selectedPost ? <DetailPage post={selectedPost} onBack={handleBack} /> : <HomePage onSelectPost={handleSelectPost} />;
+        return <DetailPage post={selectedPost} onBack={handleBack} />;
       case 'post':
         return <PostPage />;
       case 'profile':
         return <ProfilePage user={user} onSelectPost={handleSelectPost}/>;
-      // 默认情况，如果 currentPage 是 'login' 或其他未知值，都显示首页或登录页
+      case 'login':
+        return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
       default:
+        // 默认返回登录页
         return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
     }
   };
-
-  // 根据当前状态判断是否显示底部导航栏
-  const showBottomNav = user && currentPage !== 'detail' && currentPage !== 'login';
-
-  // 初始状态，如果用户未定，则显示登录页
-  if (!user && currentPage !=='login') {
-     return( 
-       <div className="w-full max-w-sm mx-auto bg-gray-100 font-sans shadow-2xl rounded-lg overflow-hidden">
-        <LoginPage onLogin={handleLogin} onGuest={handleGuest} />
-       </div>
-      )
+  
+  // [修复] 简化后的渲染逻辑
+  // 1. 如果用户未登录(user为null), 并且当前页不是登录页, 强制渲染登录页
+  if (!user && currentPage !== 'login') {
+    return (
+        <div className="w-full max-w-sm mx-auto bg-white font-sans shadow-2xl rounded-lg overflow-hidden relative">
+            <LoginPage onLogin={handleLogin} onGuest={handleGuest} />
+        </div>
+    )
   }
 
+  // 2. 如果用户已登录，或在登录页, 正常渲染
   return (
-    <div className="w-full max-w-sm mx-auto bg-gray-100 font-sans shadow-2xl rounded-lg overflow-hidden">
+    // [修复] 为外壳添加 relative 定位，以便 BottomNav 能正确地相对于它定位
+    <div className="w-full max-w-sm mx-auto bg-gray-100 font-sans shadow-2xl rounded-lg overflow-hidden relative">
         <main className="pb-16 min-h-screen">
             {renderPage()}
         </main>
-        {showBottomNav && (
+        {/* [修复] 只有用户登录后才显示导航栏, 并且详情页不显示 */}
+        {user && currentPage !== 'detail' && (
              <BottomNav activePage={currentPage} setActivePage={navigate} />
         )}
     </div>

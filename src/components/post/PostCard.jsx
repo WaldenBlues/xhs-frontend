@@ -3,7 +3,8 @@ import React from 'react';
 import { Heart } from 'lucide-react';
 
 const PostCard = ({ post, onSelectPost }) => (
-  <div className="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1" onClick={() => onSelectPost(post)}>
+  // [修复] 为瀑布流添加 break-inside-avoid class，防止卡片在分栏时被截断
+  <div className="break-inside-avoid mb-4 bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1" onClick={() => onSelectPost(post)}>
     <img src={post.imageUrl} alt={post.title} className="w-full h-auto object-cover"/>
     <div className="p-3">
       <h3 className="font-bold text-gray-800 text-sm mb-2">{post.title}</h3>
