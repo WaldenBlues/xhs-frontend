@@ -88,14 +88,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* 内容区域 */}
-      <div className="w-full px-4 py-6">
-        <MasonryLayout>
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </MasonryLayout>
-      </div>
+{/* 内容区域 */}
+<div className="w-full px-4 py-6">
+  <MasonryLayout>
+    {posts.map((post) => (
+      <PostCard 
+        key={post.id} 
+        post={post} 
+        onClick={() => navigate(`/detail/${post.id}`)} 
+      />
+    ))}
+  </MasonryLayout>
+</div>
+
 
       {/* 侧边菜单 */}
       <SideMenu 
