@@ -3,13 +3,11 @@ import React from 'react';
 import PostCard from './PostCard';
 
 const MasonryLayout = ({ posts, onSelectPost }) => (
-<div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 px-2 sm:px-4">
+  <div className="p-2 sm:p-4" style={{ columnCount: 2, columnGap: '0.75rem' }}>
     {posts.map(post => (
-      <div key={post.id} className="break-inside-avoid">
+      <div key={post.id} className="break-inside-avoid mb-3">
         <PostCard post={post} onSelectPost={onSelectPost} />
       </div>
     ))}
   </div>
 );
-
-export default MasonryLayout;

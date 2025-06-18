@@ -1,7 +1,7 @@
 // src/data/mockData.js
 
 // 模拟的帖子数据
-export const getInitialPosts = () => [
+const getInitialPosts = () => [
   {
     id: 1,
     imageUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1915&auto=format&fit=crop',
@@ -44,25 +44,9 @@ export const getInitialPosts = () => [
     user: { name: '效率达人', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d' },
     likes: 156,
   },
-   {
-    id: 7,
-    imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop',
-    title: '周末撸猫，快乐就是这么简单',
-    user: { name: '铲屎官本人', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d' },
-    likes: 888,
-  },
-  {
-    id: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=2070&auto=format&fit=crop',
-    title: '新入手的好物分享，提升幸福感',
-    user: { name: '生活美学家', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d' },
-    likes: 241,
-  }
 ];
 
-// 模拟的评论数据
-export const getCommentsForPost = () => [
+const getCommentsForPost = () => [
     { id: 1, user: { name: '摄影爱好者', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702e' }, text: '这张照片太美了，光线捕捉得刚刚好！', likes: 15 },
     { id: 2, user: { name: '路人甲', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703e' }, text: '哇，这个地方在哪里呀？好想去！', likes: 8 },
-    { id: 3, user: { name: '美食家', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d' }, text: '看着好好吃，求店铺地址！', likes: 22 },
 ];

@@ -10,7 +10,7 @@ const BottomNav = ({ activePage, setActivePage }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex justify-around items-center z-20">
+    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex justify-around items-center z-20 w-full max-w-sm mx-auto">
       {navItems.map(item => (
         <button
           key={item.id}
@@ -24,5 +24,3 @@ const BottomNav = ({ activePage, setActivePage }) => {
     </nav>
   );
 };
-
-export default BottomNav;
