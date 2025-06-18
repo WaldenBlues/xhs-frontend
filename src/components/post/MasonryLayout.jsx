@@ -2,16 +2,11 @@
 import React from 'react';
 import PostCard from './PostCard';
 
-const MasonryLayout = ({ posts }) => (
-  <div className="px-2 sm:px-4">
-    <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-      {posts.map(post => (
-        <div key={post.id} className="break-inside-avoid mb-4">
-          <PostCard post={post} />
-        </div>
-      ))}
-    </div>
+const MasonryLayout = ({ posts, onSelectPost }) => (
+  <div className="p-2 sm:p-4" style={{ columnCount: 2, columnGap: '0.75rem' }}>
+    {posts.map(post => (
+      <PostCard key={post.id} post={post} onSelectPost={onSelectPost} />
+    ))}
   </div>
 );
-
 export default MasonryLayout;
