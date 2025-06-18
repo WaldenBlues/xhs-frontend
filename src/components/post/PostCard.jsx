@@ -8,12 +8,11 @@ const PostCard = ({ post, onSelectPost }) => (
     onClick={() => onSelectPost(post)}
   >
     {/* 统一固定高度，保持宽度撑满，图片裁剪保持比例 */}
-    <img
-      src={post.imageUrl}
-      alt={post.title}
-      className="w-full h-48 object-cover rounded-t-lg"
-      loading="lazy"  // 懒加载提高性能
-    />
+   <img
+  src={post.imageUrl}
+  alt={post.title}
+  className="w-full h-48 object-cover"
+/>
     <div className="p-3">
       <h3 className="font-bold text-gray-800 text-sm mb-2">{post.title}</h3>
       <div className="flex items-center justify-between text-xs text-gray-500">
