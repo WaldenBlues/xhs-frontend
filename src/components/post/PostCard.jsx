@@ -20,3 +20,4 @@ const PostCard = ({ post, onSelectPost }) => (
     </div>
   </div>
 );
+export default PostCard;
