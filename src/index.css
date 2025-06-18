@@ -12,34 +12,12 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark; /* 如果你需要暗黑模式支持 */
-  
-  /* 移除或注释掉可能干扰 Tailwind 的全局颜色/背景设置，除非你明确需要它们 */
-  /* color: rgba(255, 255, 255, 0.87); */
-  /* background-color: #242424; */
+
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* 通常情况下，body 只需要简单的重置，避免设置 display: flex; place-items: center; */
-body {
-  margin: 0;
-  /* 移除 display: flex; place-items: center; */
-  /* 确保 body 能够正常流动布局，让子元素通过 Tailwind 控制 */
-  min-width: 320px;
-  min-height: 100vh; /* 保持视口高度 */
-  background-color: #f0f0f0; /* 可以给一个默认背景色，或由App.jsx的div控制 */
-}
-
-/* 对于 h1, a, button 等元素，尽量通过 Tailwind 类来控制它们的样式 */
-/* 如果你希望所有链接有默认颜色，可以保留类似 a { color: #646cff; text-decoration: inherit; } */
-/* 但避免设置过多的全局样式，尤其是那些 Tailwind 可以替代的 */
-a {
-  font-weight: 500;
-  text-decoration: inherit;
-}
-/* a:hover { color: #535bf2; } */ /* 这个也可以通过 Tailwind 的 hover:text-blue-500 来实现 */
 
 
