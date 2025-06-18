@@ -1,0 +1,575 @@
+
+
+===== FILE: ./api/apiClient.js =====
+
+
+
+
+===== FILE: ./api/authApi.js =====
+
+
+
+
+===== FILE: ./api/postsApi.js =====
+
+
+
+
+===== FILE: ./App.jsx =====
+
+
+// src/App.jsx
+import React, { useState } from 'react';
+
+// 导入页面组件
+import HomePage from './pages/HomePage';
+import DetailPage from './pages/DetailPage';
+import LoginPage from './pages/LoginPage';
+import PostPage from './pages/PostPage';
+import ProfilePage from './pages/ProfilePage';
+
+// 导入布局组件
+import BottomNav from './components/layout/BottomNav';
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('home'); // 'home', 'login', 'post', 'profile', 'detail'
+  const [user, setUser] = useState(null); // null 表示未登录/游客
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  // --- 页面切换逻辑 ---
+  const handleLogin = () => {
+    setUser({ name: '认证用户', avatar: 'https://i.pravatar.cc/150?u=authenticated' });
+    setCurrentPage('home'); // 登录成功后跳转到首页
+  };
+
+  const handleGuest = () => {
+    setUser({ name: '游客', avatar: 'https://i.pravatar.cc/150?u=guest' });
+    setCurrentPage('home'); // 游客身份进入首页
+  };
+
+  const handleSelectPost = (post) => {
+    setSelectedPost(post);
+    setCurrentPage('detail');
+  }
+
+  const handleBackToHome = () => {
+      setSelectedPost(null);
+      setCurrentPage('home');
+  }
+
+  // 导航函数，处理未登录用户尝试访问受保护页面的情况
+  const navigate = (page) => {
+      // 如果用户未登录，并且尝试访问发布页或个人中心页，则跳转到登录页
+      if (!user && (page === 'post' || page === 'profile')) {
+          setCurrentPage('login');
+      } else {
+          setCurrentPage(page);
+      }
+  }
+
+  // --- 渲染逻辑 ---
+  const renderPage = () => {
+    // 如果用户未登录，只渲染登录页
+    if (!user) {
+        return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
+    }
+
+    // 已登录用户根据当前页面状态渲染
+    switch (currentPage) {
+      case 'home':
+        return <HomePage onSelectPost={handleSelectPost} />;
+      case 'detail':
+        // 确保 selectedPost 在渲染 DetailPage 时有值
+        return selectedPost ? <DetailPage post={selectedPost} onBack={handleBackToHome} /> : <HomePage onSelectPost={handleSelectPost} />;
+      case 'post':
+        return <PostPage />;
+      case 'profile':
+        return <ProfilePage user={user} onSelectPost={handleSelectPost}/>;
+      case 'login': // 理论上已登录不会直接导航到登录页，但为了完整性保留
+        return <LoginPage onLogin={handleLogin} onGuest={handleGuest} />;
+      default:
+        // 默认情况，如果currentPage是一个未知值，回到首页
+        return <HomePage onSelectPost={handleSelectPost} />;
+    }
+  };
+
+  return (
+    // 使用一个固定的外壳来模拟手机屏幕
+    <div className="w-full max-w-sm mx-auto bg-gray-100 font-sans shadow-2xl rounded-lg overflow-hidden">
+        <main className="pb-16 min-h-screen"> {/* 为底部导航留出空间 */}
+            {renderPage()}
+        </main>
+        {/* 只有在用户登录且不在详情页时才显示底部导航 */}
+        {user && currentPage !== 'detail' && (
+             <BottomNav activePage={currentPage} setActivePage={navigate} />
+        )}
+    </div>
+  );
+}
+
+===== FILE: ./components/common/Button.jsx =====
+
+
+
+
+===== FILE: ./components/common/Input.jsx =====
+
+
+
+
+===== FILE: ./components/common/Modal.jsx =====
+
+
+
+
+===== FILE: ./components/common/Spinner.jsx =====
+
+
+
+
+===== FILE: ./components/layout/BottomNav.jsx =====
+
+
+// src/components/layout/BottomNav.jsx
+import React from 'react';
+import { PlusSquare, User, Home } from 'lucide-react'; // 只导入需要的图标
+
+const BottomNav = ({ activePage, setActivePage }) => {
+  const navItems = [
+    { id: 'home', icon: Home, label: '首页' },
+    { id: 'post', icon: PlusSquare, label: '发布' },
+    { id: 'profile', icon: User, label: '我' },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex justify-around items-center z-20">
+      {navItems.map(item => (
+        <button
+          key={item.id}
+          onClick={() => setActivePage(item.id)}
+          className={`flex flex-col items-center justify-center w-full transition-colors duration-200 ${activePage === item.id ? 'text-red-500' : 'text-gray-600'}`}
+        >
+          <item.icon className={`w-6 h-6 mb-1 ${item.id === 'post' ? 'w-8 h-8' : ''}`} />
+          <span className={`text-xs ${item.id === 'post' ? 'hidden' : ''}`}>{item.label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+};
+
+export default BottomNav;
+
+===== FILE: ./components/layout/Header.jsx =====
+
+
+
+
+===== FILE: ./components/layout/PageWrapper.jsx =====
+
+
+
+
+===== FILE: ./components/post/Comment.jsx =====
+
+
+
+
+===== FILE: ./components/post/CommentList.jsx =====
+
+
+
+
+===== FILE: ./components/post/MasonryLayout.jsx =====
+
+
+// src/components/post/MasonryLayout.jsx
+import React from 'react';
+import PostCard from './PostCard';
+
+const MasonryLayout = ({ posts, onSelectPost }) => (
+  <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 px-2 sm:px-4">
+    {posts.map(post => (
+      <div key={post.id} className="break-inside-avoid">
+        <PostCard post={post} onSelectPost={onSelectPost} />
+      </div>
+    ))}
+  </div>
+);
+
+export default MasonryLayout;
+
+
+===== FILE: ./components/post/PostCard.jsx =====
+
+
+// src/components/post/PostCard.jsx
+import React from 'react';
+import { Heart } from 'lucide-react';
+
+const PostCard = ({ post, onSelectPost }) => (
+  <div className="break-inside-avoid mb-4 bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1" onClick={() => onSelectPost(post)}>
+    <img src={post.imageUrl} alt={post.title} className="w-full h-auto object-cover"/>
+    <div className="p-3">
+      <h3 className="font-bold text-gray-800 text-sm mb-2">{post.title}</h3>
+      <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="flex items-center">
+          <img src={post.user.avatar} alt={post.user.name} className="w-5 h-5 rounded-full mr-2"/>
+          <span>{post.user.name}</span>
+        </div>
+        <div className="flex items-center">
+          <Heart className="w-4 h-4 mr-1 text-gray-400" />
+          <span>{post.likes}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export default PostCard;
+
+===== FILE: ./contexts/AuthContext.jsx =====
+
+
+
+
+===== FILE: ./data/mockData.js =====
+
+
+// src/data/mockData.js
+
+// 模拟的帖子数据
+export const getInitialPosts = () => [
+  {
+    id: 1,
+    imageUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1915&auto=format&fit=crop',
+    title: '探索山间秘境，寻找那一片宁静',
+    user: { name: '旅行爱好者', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' },
+    likes: 128,
+  },
+  {
+    id: 2,
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?q=80&w=2070&auto=format&fit=crop',
+    title: '海边的日落，是治愈一切的良药',
+    user: { name: '摄影师阿张', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d' },
+    likes: 452,
+  },
+  {
+    id: 3,
+    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ab?q=80&w=2070&auto=format&fit=crop',
+    title: '今日份穿搭分享，潮流永不落幕',
+    user: { name: '时尚Coco', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026706d' },
+    likes: 78,
+  },
+  {
+    id: 4,
+    imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop',
+    title: '美食探店 | 这家烤肉真的绝了！',
+    user: { name: '吃货日记', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d' },
+    likes: 999,
+  },
+  {
+    id: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop',
+    title: '我的极简主义桌面 setup',
+    user: { name: '科技宅', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026708d' },
+    likes: 302,
+  },
+  {
+    id: 6,
+    imageUrl: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=2070&auto=format&fit=crop',
+    title: '高效工作流：我是如何管理我的任务的',
+    user: { name: '效率达人', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026709d' },
+    likes: 156,
+  },
+   {
+    id: 7,
+    imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop',
+    title: '周末撸猫，快乐就是这么简单',
+    user: { name: '铲屎官本人', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026710d' },
+    likes: 888,
+  },
+  {
+    id: 8,
+    imageUrl: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=2070&auto=format&fit=crop',
+    title: '新入手的好物分享，提升幸福感',
+    user: { name: '生活美学家', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026711d' },
+    likes: 241,
+  }
+];
+
+// 模拟的评论数据
+export const getCommentsForPost = () => [
+    { id: 1, user: { name: '摄影爱好者', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026702e' }, text: '这张照片太美了，光线捕捉得刚刚好！', likes: 15 },
+    { id: 2, user: { name: '路人甲', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026703e' }, text: '哇，这个地方在哪里呀？好想去！', likes: 8 },
+    { id: 3, user: { name: '美食家', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026707d' }, text: '看着好好吃，求店铺地址！', likes: 22 },
+];
+
+===== FILE: ./hooks/useApi.js =====
+
+
+
+
+===== FILE: ./hooks/useAuth.js =====
+
+
+
+
+===== FILE: ./hooks/useInfiniteScroll.js =====
+
+
+
+
+===== FILE: ./main.jsx =====
+
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+===== FILE: ./pages/DetailPage.jsx =====
+
+
+// src/pages/DetailPage.jsx
+import React, { useMemo } from 'react';
+import { ChevronLeft, MoreHorizontal, Heart, MessageCircle } from 'lucide-react';
+import { getCommentsForPost } from '../data/mockData'; // 导入模拟评论数据
+
+const DetailPage = ({ post, onBack }) => {
+    const comments = useMemo(() => getCommentsForPost(), []); // 使用模拟评论数据
+
+    if (!post) {
+        // 如果没有传入post数据，可能需要显示一个加载状态或者重定向
+        // 这里简单地返回null或者一个提示
+        return <div className="p-4 text-center text-gray-500">内容加载中或不存在...</div>;
+    }
+
+    return (
+        <div className="bg-white min-h-full">
+            <header className="sticky top-0 bg-white z-10 flex items-center p-4 border-b">
+                <button onClick={onBack} className="p-2 -ml-2">
+                    <ChevronLeft className="w-6 h-6 text-gray-800" />
+                </button>
+                <div className="flex items-center ml-2">
+                    <img src={post.user.avatar} alt={post.user.name} className="w-8 h-8 rounded-full mr-3"/>
+                    <span className="font-bold text-sm">{post.user.name}</span>
+                </div>
+                <button className="ml-auto bg-red-500 text-white text-sm font-bold py-1.5 px-4 rounded-full">关注</button>
+                <button className="ml-2 p-1">
+                    <MoreHorizontal className="w-5 h-5 text-gray-800" />
+                </button>
+            </header>
+            
+            <div className="p-4">
+                <img src={post.imageUrl} alt={post.title} className="w-full rounded-lg mb-4"/>
+                <h1 className="text-xl font-bold mb-2">{post.title}</h1>
+                <p className="text-gray-600 mb-4">这是一段关于这张图片的详细描述，可以包含拍摄时的心情、故事、或者一些小技巧分享。#旅行日记 #摄影分享</p>
+                <span className="text-xs text-gray-400">发布于 昨天 18:30</span>
+            </div>
+
+            <div className="border-t p-4">
+                <h2 className="font-bold text-gray-700 mb-4">评论 {comments.length}</h2>
+                <div>
+                    {comments.map(comment => (
+                        <div key={comment.id} className="flex items-start mb-4">
+                            <img src={comment.user.avatar} alt={comment.user.name} className="w-8 h-8 rounded-full mr-3 mt-1"/>
+                            <div className="flex-1">
+                                <p className="text-xs text-gray-500">{comment.user.name}</p>
+                                <p className="text-sm text-gray-800 mt-1">{comment.text}</p>
+                            </div>
+                            <div className="flex flex-col items-center text-gray-500">
+                                <Heart className="w-4 h-4"/>
+                                <span className="text-xs">{comment.likes}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <footer className="sticky bottom-0 bg-white border-t p-2 flex items-center">
+                <input type="text" placeholder="说点什么..." className="flex-1 bg-gray-100 rounded-full py-2 px-4 text-sm focus:outline-none"/>
+                <div className="flex space-x-4 ml-4 text-gray-600">
+                     <div className="flex items-center space-x-1">
+                        <Heart className="w-5 h-5" />
+                        <span>{post.likes}</span>
+                     </div>
+                     <div className="flex items-center space-x-1">
+                        <MessageCircle className="w-5 h-5" />
+                        <span>{comments.length}</span>
+                     </div>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+export default DetailPage;
+
+===== FILE: ./pages/HomePage.jsx =====
+
+
+// src/pages/HomePage.jsx
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
+import MasonryLayout from '../components/post/MasonryLayout'; // 更新路径
+import { getInitialPosts } from '../data/mockData'; // 导入模拟数据
+
+const HomePage = ({ onSelectPost }) => {
+  const [posts, setPosts] = useState(getInitialPosts());
+  
+return (
+  <div className="max-w-screen-xl mx-auto px-4">
+    <header className="sticky top-0 bg-white bg-opacity-90 backdrop-blur-sm z-10 flex items-center justify-between p-4 border-b">
+      <div className="flex items-center space-x-6">
+        <h1 className="text-lg font-bold text-red-500">发现</h1>
+        <h1 className="text-lg font-bold text-gray-500">附近</h1>
+      </div>
+      <Search className="w-6 h-6 text-gray-600" />
+    </header>
+
+    <MasonryLayout posts={posts} onSelectPost={onSelectPost} />
+  </div>
+);
+
+};
+
+export default HomePage;
+
+===== FILE: ./pages/LoginPage.jsx =====
+
+
+// src/pages/LoginPage.jsx
+import React from 'react';
+
+const LoginPage = ({ onLogin, onGuest }) => (
+  <div className="p-8 flex flex-col items-center justify-center h-full bg-gray-50">
+    <h1 className="text-3xl font-bold text-red-500 mb-8">欢迎回来</h1>
+    <div className="w-full max-w-xs">
+        <input type="text" placeholder="用户名" className="w-full px-4 py-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"/>
+        <input type="password" placeholder="密码" className="w-full px-4 py-3 mb-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"/>
+        <button onClick={onLogin} className="w-full bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 transition-colors">
+            登录 (JWT)
+        </button>
+        <button onClick={onGuest} className="w-full mt-4 text-gray-500 py-3 rounded-lg font-bold hover:bg-gray-200 transition-colors">
+            游客身份浏览
+        </button>
+    </div>
+  </div>
+);
+
+export default LoginPage;
+
+===== FILE: ./pages/NotFoundPage.jsx =====
+
+
+
+
+===== FILE: ./pages/PostPage.jsx =====
+
+
+// src/pages/PostPage.jsx
+import React from 'react';
+import { PlusSquare } from 'lucide-react';
+
+const PostPage = () => (
+    <div className="p-4 bg-gray-50 h-full">
+        <header className="flex justify-between items-center mb-6">
+            <h1 className="text-xl font-bold">发布新内容</h1>
+            <button className="bg-red-500 text-white font-bold py-2 px-6 rounded-full">发布</button>
+        </header>
+        <textarea
+            className="w-full h-32 p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-red-400"
+            placeholder="添加标题..."
+        ></textarea>
+        <textarea
+            className="w-full h-48 p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-red-400"
+            placeholder="分享你的故事..."
+        ></textarea>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-red-400 hover:text-red-400 transition-colors">
+            <PlusSquare className="mx-auto w-12 h-12 text-gray-400" />
+            <p className="mt-2 text-sm">上传图片或视频</p>
+            <p className="text-xs text-gray-500 mt-1">支持本地上传或 Cloudinary</p>
+        </div>
+    </div>
+);
+
+export default PostPage;
+
+===== FILE: ./pages/ProfilePage.jsx =====
+
+
+// src/pages/ProfilePage.jsx
+import React, { useMemo } from 'react';
+import MasonryLayout from '../components/post/MasonryLayout'; // 更新路径
+import { getInitialPosts } from '../data/mockData'; // 导入模拟数据
+
+const ProfilePage = ({ user, onSelectPost }) => {
+    // 模拟用户的发布内容，这里简单地取偶数索引的帖子作为示例
+    const myPosts = useMemo(() => getInitialPosts().filter((_, index) => index % 2 === 0), []);
+    
+    // 如果没有user信息，可以返回一个加载状态或者提示登录
+    if (!user) {
+        return <div className="p-4 text-center text-gray-500">请先登录以查看个人主页。</div>;
+    }
+
+    return (
+        <div className="bg-gray-100 min-h-full">
+            <div className="p-6 bg-white">
+                 <div className="flex items-center">
+                    <img src={user.avatar} alt={user.name} className="w-20 h-20 rounded-full mr-6"/>
+                    <div>
+                        <h2 className="text-2xl font-bold">{user.name}</h2>
+                        <p className="text-sm text-gray-500 mt-1">小红书号: 12345678</p>
+                    </div>
+                 </div>
+                 <p className="mt-4 text-sm">点击这里，填写简介</p>
+                 <div className="flex mt-4 space-x-8 text-center">
+                     <div>
+                         <p className="font-bold text-lg">10</p>
+                         <p className="text-sm text-gray-500">关注</p>
+                     </div>
+                     <div>
+                         <p className="font-bold text-lg">1.2k</p>
+                         <p className="text-sm text-gray-500">粉丝</p>
+                     </div>
+                     <div>
+                         <p className="font-bold text-lg">304</p>
+                         <p className="text-sm text-gray-500">获赞与收藏</p>
+                     </div>
+                 </div>
+            </div>
+            <div className="mt-2 bg-white">
+                <h3 className="p-4 font-bold border-b">我的发布</h3>
+                <MasonryLayout posts={myPosts} onSelectPost={onSelectPost} />
+            </div>
+        </div>
+    )
+};
+
+export default ProfilePage;
+
+===== FILE: ./routes/index.jsx =====
+
+
+
+
+===== FILE: ./routes/ProtectedRoute.jsx =====
+
+
+
+
+===== FILE: ./utils/dateFormatter.js =====
+
+
+
+
+===== FILE: ./utils/validators.js =====
+
+
