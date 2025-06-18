@@ -1,11 +1,13 @@
 // src/components/post/MasonryLayout.jsx
 import React from 'react';
-import PostCard from './PostCard'; // 导入 PostCard 组件，路径是相对于当前文件的
+import PostCard from './PostCard';
 
 const MasonryLayout = ({ posts, onSelectPost }) => (
-  <div className="p-2 sm:p-4" style={{ columnCount: 2, columnGap: '0.5rem' }}>
+  <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 px-2 sm:px-4">
     {posts.map(post => (
-      <PostCard key={post.id} post={post} onSelectPost={onSelectPost} />
+      <div key={post.id} className="break-inside-avoid">
+        <PostCard post={post} onSelectPost={onSelectPost} />
+      </div>
     ))}
   </div>
 );
