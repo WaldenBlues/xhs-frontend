@@ -3,7 +3,6 @@ import React from 'react';
 import PostCard from './PostCard';
 
 const MasonryLayout = ({ posts, onSelectPost }) => (
-  // [修复] 恢复使用 column-count 以实现更原生的瀑布流效果
   <div className="p-2 sm:p-4" style={{ columnCount: 2, columnGap: '0.75rem' }}>
     {posts.map(post => (
       <PostCard key={post.id} post={post} onSelectPost={onSelectPost} />
