@@ -11,7 +11,7 @@ export const getInitialPosts = () => [
   },
   {
     id: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723a996f6ea?id=2&q=80&w=2070&auto=format&fit=crop',
     title: '海边的日落，是治愈一切的良药',
     user: { name: '摄影师阿张', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026705d' },
     likes: 452,
