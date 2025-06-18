@@ -23,14 +23,14 @@ const DetailPage = () => {
       />
 
       {/* 半透明遮罩层，可选，增加层次 */}
-      <div className="absolute inset-0 bg-black/30 z-10" />
+      <div className="absolute inset-0 bg-black/10 z-10" />
 
       <div className="relative z-20 flex flex-col min-h-screen">
         <Header title="详情" showBack />
 
-        {/* 内容容器 */}
+        {/* 文章内容 */}
         <div className="flex-1 p-4 max-w-3xl mx-auto w-full">
-          <div className="space-y-4 bg-white/60 backdrop-blur-md rounded-xl shadow-lg p-6">
+          <div className="bg-white/60 backdrop-blur-md rounded-xl shadow-lg p-6 space-y-4">
             <h2 className="text-xl font-semibold">{post.title}</h2>
             <div className="flex items-center text-sm text-gray-700">
               <img
@@ -41,9 +41,12 @@ const DetailPage = () => {
               <span>{post.user.name}</span>
               <span className="ml-auto">{post.likes} 喜欢</span>
             </div>
+          </div>
 
-            {/* 评论区 */}
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+          {/* 评论容器，放在文章内容下方 */}
+          <div className="mt-6 bg-white/60 backdrop-blur-md rounded-xl shadow-lg p-6 max-h-[50vh] overflow-y-auto space-y-4">
+            <h3 className="text-lg font-semibold">评论</h3>
+            <div className="space-y-2">
               {comments.map(c => (
                 <div key={c.id} className="flex items-start">
                   <img
@@ -52,7 +55,7 @@ const DetailPage = () => {
                     className="w-6 h-6 rounded-full mr-2 mt-1"
                   />
                   <div>
-                    <div className="text-sm font-medium">{c.user.name}</div>
+                    <div className="text-sm font-medium text-gray-900">{c.user.name}</div>
                     <div className="text-sm text-gray-800">{c.text}</div>
                   </div>
                 </div>
