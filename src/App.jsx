@@ -11,7 +11,7 @@ import HotPage from './pages/HotPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import BottomNav from './components/layout/BottomNav';
-
+import ChatWidget from './components/post/ChatWidget';
 // 创建一个包装组件来处理底部导航栏的显示逻辑
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -21,6 +21,7 @@ const Layout = ({ children }) => {
     <div className="min-h-screen bg-gray-50">
       {children}
       {showBottomNav && <BottomNav />}
+            <ChatWidget />
     </div>
   );
 };
