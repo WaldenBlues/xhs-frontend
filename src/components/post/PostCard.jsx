@@ -1,14 +1,48 @@
 // src/components/post/PostCard.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
+import api from "../../api/apiClient.js";
 
 const PostCard = ({ post }) => {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({
+    avatar: post.user?.avatar || "/default.png",
+    name: post.user?.name || "匿名用户",
+  });
 
   const handleClick = () => {
-    navigate(`/detail/${post.id}`);
+    api
+      .post(`/api/recommend/view/${post.id}`)
+      .then((response) => {
+        console.log("更新浏览量成功:", response.data);
+        navigate(`/detail/${post.id}`);
+      })
+      .catch((error) => {
+        console.error("更新浏览量失败:", error);
+        message.error("更新浏览量失败，请稍后再试");
+      });
+    // navigate(`/detail/${post.id}`);
   };
+
+  useEffect(() => {
+    // 只有当post.user.id存在时才发送请求
+    if (post.user?.id) {
+      api
+        .get(`/api/auth/message/${post.user.id}`)
+        .then((response) => {
+          console.log("当前用户信息:", response.data);
+          setUserInfo({
+            avatar: response.data.avatar || "/default.png",
+            name: response.data.username || "匿名用户",
+          });
+        })
+        .catch((error) => {
+          console.error("获取当前用户信息失败:", error);
+          // 保持默认值
+        });
+    }
+  }, [post.user?.id]);
 
   return (
     <div
@@ -30,12 +64,12 @@ const PostCard = ({ post }) => {
         <div className="flex items-center justify-between text-xs lg:text-sm text-gray-500">
           <div className="flex items-center">
             <img
-              src={post.user.avatar}
-              alt={post.user.name}
+              src={userInfo.avatar}
+              alt={userInfo.name}
               className="w-5 h-5 lg:w-6 lg:h-6 rounded-full mr-2 border border-gray-200"
             />
             <span className="truncate max-w-[4rem] lg:max-w-[8rem] text-gray-600">
-              {post.user.name}
+              {userInfo.name}
             </span>
           </div>
           <div className="flex items-center">

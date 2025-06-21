@@ -1,5 +1,5 @@
 // src/components/post/MasonryLayout.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 const MasonryLayout = ({ children }) => {
   const containerRef = useRef(null);
@@ -16,23 +16,22 @@ const MasonryLayout = ({ children }) => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       style={{
-        display: 'grid',
-        gap: '1rem',
-        width: '100%'
+        display: "grid",
+        gap: "1rem",
+        width: "100%",
+        marginBottom: "15%",
       }}
     >
-      {React.Children.map(children, child => (
-        <div>
-          {child}
-        </div>
+      {React.Children.map(children, (child) => (
+        <div>{child}</div>
       ))}
     </div>
   );
